@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { motion } from "framer-motion";
 import { ListGroup } from "react-bootstrap";
 import "./App.css";
-import { getColor } from "./utils";
+import { getColor, type List } from "./utils";
 
 export default function ListItem({
 	item,
@@ -12,7 +12,7 @@ export default function ListItem({
 	nowEditing,
 	setNowEditing,
 }: {
-	tab: string;
+	tab: keyof List;
 	item: string;
 	i: number;
 	setNowEditing: (n: number) => void;
@@ -23,7 +23,7 @@ export default function ListItem({
 		<motion.div
 			initial={{ opacity: 0, y: -20 }}
 			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -20 }}
+			exit={{ opacity: 0, y: -20, height: 0 }}
 			transition={{ duration: 0.3, delay: i * 0.05 }} // Staggered delay
 			style={{
 				position: "relative",
@@ -33,7 +33,6 @@ export default function ListItem({
 		>
 			<motion.div
 				style={{ position: "absolute", width: "100%", transform: "translateY(-100%)" }}
-				key={item}
 				initial={{ x: "100%" }} // Start off-screen (right)
 				animate={{ x: nowEditing === i ? "0%" : "100%" }} // Slide into view
 				exit={{ x: "100%" }} // Slide back out to the right when editing is done
@@ -44,12 +43,11 @@ export default function ListItem({
 					duration: 0.2,
 				}}
 			>
-				<ListGroup.Item key={i} action variant="danger" onBlur={() => setNowEditing(-1)} onClick={onDelete}>
+				<ListGroup.Item action variant="danger" onBlur={() => setNowEditing(-1)} onClick={onDelete}>
 					Delete
 				</ListGroup.Item>
 			</motion.div>
 			<motion.div
-				key={item}
 				initial={{ x: "0%" }}
 				animate={{ x: nowEditing === i ? "-100%" : "0%" }} // Slide into view
 				exit={{ x: "0%" }} // Slide back out to the right when editing is done

@@ -2,6 +2,15 @@
 import { initializeApp } from "firebase/app";
 import { arrayRemove, arrayUnion, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 
+export interface List {
+	Venlo: string[];
+	Eindhoven: string[];
+	Alex: string[];
+	Kol: string[];
+	Watchlist: string[];
+}
+export const TABS: (keyof List)[] = ["Eindhoven", "Venlo", "Alex", "Kol", "Watchlist"];
+
 const app = initializeApp({
 	authDomain: import.meta.env.VITE_AUTH_DOMAIN,
 	projectId: import.meta.env.VITE_PROJECT_ID,
@@ -10,43 +19,40 @@ const app = initializeApp({
 	appId: import.meta.env.VITE_APP_ID,
 });
 const db = getFirestore(app);
+const dbRef = doc(db, "list", "list");
 
 export async function getData() {
-	// if (import.meta.env.DEV)
-	// 	return {
-	// 		Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
-	// 		Venlo: [],
-	// 		Alex: ["Alex"],
-	// 		Kol: ["Kol"],
-	// 	};
+	if (import.meta.env.DEV)
+		return {
+			Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
+			Venlo: [],
+			Alex: ["Alex"],
+			Kol: ["Kol"],
+			Watchlist: ["Watchlist"],
+		} as List;
 
-	const docRef = doc(db, "list", "list");
-	const docSnap = await getDoc(docRef);
-	const list = docSnap.data() as List;
+	const data = (await getDoc(dbRef)).data() as List;
+	for (const key of TABS) {
+		data[key] = data[key].filter((item) => item.length > 0);
+	}
 
-	return list;
+	return data;
 }
 
-export async function addItemToList(tab: string, item: string) {
-	const docRef = doc(db, "list", "list");
+export function addItemToList(tab: string, item: string) {
+	if (item.length === 0) return;
 
-	await updateDoc(docRef, {
-		[tab]: arrayUnion(item), // Add the item to the array, ensuring no duplicates
-	});
+	return updateDoc(dbRef, { [tab]: arrayUnion(item) });
 }
 
-export async function removeItemFromList(tab: string, item: string) {
-	const docRef = doc(db, "list", "list");
-
-	await updateDoc(docRef, {
-		[tab]: arrayRemove(item), // Add the item to the array, ensuring no duplicates
-	});
+export function removeItemFromList(tab: string, item: string) {
+	return updateDoc(dbRef, { [tab]: arrayRemove(item) });
 }
 
-export const TABS: (keyof List)[] = ["Eindhoven", "Venlo", "Alex", "Kol"];
-
-export function getColor(tab: string) {
+export function getColor(tab: keyof List) {
 	switch (tab) {
+		case "Watchlist":
+			return "gray";
 		case "Eindhoven":
 		case "Alex":
 			return "blue";
@@ -58,20 +64,6 @@ export function getColor(tab: string) {
 	}
 }
 
-export function getColorVal(tab: string) {
+export function getColorVal(tab: keyof List) {
 	return getComputedStyle(document.documentElement).getPropertyValue(`--${getColor(tab)}`);
-}
-
-// export async function updateList() {
-// 	const docRef = await addDoc(collection(db, "todos"), {
-// 		text: newTodo,
-// 		completed: false,
-// 	});
-// }
-
-export interface List {
-	Venlo: string[];
-	Eindhoven: string[];
-	Alex: string[];
-	Kol: string[];
 }

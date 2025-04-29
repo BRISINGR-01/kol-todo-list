@@ -4,3 +4,6 @@
 .blue {
 	color: var(--blue);
 }
+.gray {
+	color: lightgray;
+}

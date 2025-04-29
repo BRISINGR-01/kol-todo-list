@@ -1,4 +1,5 @@
 /node_modules
+/dist
 
 # Firebase build and deployment files
 /firebase-debug.log
