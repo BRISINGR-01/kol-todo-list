@@ -22,14 +22,14 @@ const db = getFirestore(app);
 const dbRef = doc(db, "list", "list");
 
 export async function getData() {
-	if (import.meta.env.DEV)
-		return {
-			Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
-			Venlo: [],
-			Alex: ["Alex"],
-			Kol: ["Kol"],
-			Watchlist: ["Watchlist"],
-		} as List;
+	// if (import.meta.env.DEV)
+	// 	return {
+	// 		Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
+	// 		Venlo: [],
+	// 		Alex: ["Alex"],
+	// 		Kol: ["Kol"],
+	// 		Watchlist: ["Watchlist"],
+	// 	} as List;
 
 	const data = (await getDoc(dbRef)).data() as List;
 	for (const key of TABS) {
