@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { arrayRemove, arrayUnion, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getFirestore, updateDoc } from "firebase/firestore";
 
 export interface List {
 	Venlo: string[];
@@ -22,21 +22,14 @@ const db = getFirestore(app);
 const dbRef = doc(db, "list", "list");
 
 export async function getData() {
-	// if (import.meta.env.DEV)
-	// 	return {
-	// 		Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
-	// 		Venlo: [],
-	// 		Alex: ["Alex"],
-	// 		Kol: ["Kol"],
-	// 		Watchlist: ["Watchlist"],
-	// 	} as List;
-
-	const data = (await getDoc(dbRef)).data() as List;
-	for (const key of TABS) {
-		data[key] = data[key].filter((item) => item.length > 0);
-	}
-
-	return data;
+	if (import.meta.env.VITE_DEV)
+		return {
+			Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
+			Venlo: [],
+			Alex: ["Alex"],
+			Kol: ["Kol"],
+			Watchlist: ["Watchlist"],
+		} as List;
 }
 
 export function addItemToList(tab: string, item: string) {
