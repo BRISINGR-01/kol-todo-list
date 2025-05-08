@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { arrayRemove, arrayUnion, doc, getFirestore, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 
 export interface List {
 	Venlo: string[];
@@ -30,6 +30,13 @@ export async function getData() {
 			Kol: ["Kol"],
 			Watchlist: ["Watchlist"],
 		} as List;
+
+	const data = (await getDoc(dbRef)).data() as List;
+	for (const key of TABS) {
+		data[key] = data[key].filter((item) => item.length > 0);
+	}
+
+	return data;
 }
 
 export function addItemToList(tab: string, item: string) {
