@@ -22,7 +22,7 @@ const db = getFirestore(app);
 const dbRef = doc(db, "list", "list");
 
 export async function getData() {
-	if (import.meta.env.VITE_DEV)
+	if (import.meta.env.VITE_DEV === "true")
 		return {
 			Eindhoven: ["Eindhoven", "Eindhoven - 1", "Eindhoven - 2", "Eindhoven - 3"],
 			Venlo: [],
@@ -33,7 +33,7 @@ export async function getData() {
 
 	const data = (await getDoc(dbRef)).data() as List;
 	for (const key of TABS) {
-		data[key] = data[key].filter((item) => item.length > 0);
+		data[key] = data[key].filter((item) => item.length > 0).reverse();
 	}
 
 	return data;

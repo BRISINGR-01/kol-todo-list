@@ -94,9 +94,7 @@ export default function AddButton({
 						value={newItem}
 						onChange={(e) => {
 							setNewItem(e.target.value);
-							if (e.target.value.replace(newItem, "") === "\n") {
-								addItem();
-							}
+							if (e.target.value.endsWith("\n")) addItem();
 						}}
 						placeholder="Type..."
 					/>
